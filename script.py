@@ -155,6 +155,8 @@ def main():
     seen = load_seen()
     new_seen = set(seen)
 
+    found_new = False  # 🔹 track if any new internship appeared
+
     for url in RSS_FEEDS:
         feed = feedparser.parse(url)
 
@@ -182,8 +184,17 @@ Link:
                 send_email("New AI Internship Found 🚀", email_body)
 
                 new_seen.add(post_id)
+                found_new = True  # 🔹 mark that we found something
+
+    # 🔹 If NOTHING new was found → send status email
+    if not found_new:
+        send_email(
+            "Internship Bot Status ℹ️",
+            "No new AI internships were found in this scheduled check."
+        )
 
     save_seen(new_seen)
+
 
 
 if __name__ == "__main__":
